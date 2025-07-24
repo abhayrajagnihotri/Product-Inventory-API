@@ -1,19 +1,19 @@
 use axum::{
-    // Removed `post` and `delete` from the import list
-    routing::{get, put}, // <--- MODIFIED
+    
+    routing::{get, put},
     Router,
 };
 use std::{collections::HashMap, net::SocketAddr, sync::{Arc, Mutex}};
 use uuid::Uuid;
 use tokio::net::TcpListener;
 
-// Declare your modules.
+
 mod handlers;
 mod models;
 mod product_handlers;
-// Removed `mod store;` as we are deleting the store.rs file. // <--- MODIFIED
 
-// Import only the necessary items from `product_handlers`.
+
+
 use product_handlers::{
     get_products, create_product, update_product, delete_product, AppState
 };
