@@ -10,26 +10,22 @@ use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 use axum::extract::FromRef;
 
-// Define ProductDb *first* as the concrete type for our in-memory store.
+
 pub type ProductDb = Arc<Mutex<HashMap<Uuid, Product>>>;
 
-// Then, define AppState as the struct that wraps our ProductDb.
-// This AppState is what will be passed as the router's overall state.
-#[derive(Clone)] // AppState needs to be Clone because the router's state requires it.
+
+#[derive(Clone)]
 pub struct AppState(pub ProductDb);
 
-// Implement FromRef for ProductDb, allowing it to be extracted from AppState.
-// This tells Axum: "If the overall application state (S) is `AppState`,
-// here's how you can provide a `ProductDb` (T) to a handler that requests it."
+
 impl FromRef<AppState> for ProductDb {
     fn from_ref(state: &AppState) -> ProductDb {
-        // We access the inner ProductDb through the tuple struct's .0 field.
+        
         state.0.clone()
     }
 }
 
-// Handlers are correctly defined to request `State<ProductDb>`.
-// Axum will now use the `FromRef` implementation above to fulfill this request.
+
 
 pub async fn get_products(State(db): State<ProductDb>) -> Json<Vec<Product>> {
     let db = db.lock().unwrap();
